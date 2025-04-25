@@ -6,9 +6,21 @@ public class Main {
         season1.addEpisode(new Episode("Cliffhanger", 1350));
 
         System.out.println("Normal iterator:");
-        EpisodeIterator it = season1.getNormalIterator();
-        while (it.hasNext()) {
-            System.out.println(it.next());
+        EpisodeIterator normal = season1.getNormalIterator();
+        while (normal.hasNext()) {
+            System.out.println(normal.next());
+        }
+
+        System.out.println("\nReverse iterator:");
+        EpisodeIterator reverse = new ReverseSeasonIterator(season1.getEpisodes());
+        while (reverse.hasNext()) {
+            System.out.println(reverse.next());
+        }
+
+        System.out.println("\nShuffle iterator:");
+        EpisodeIterator shuffle = new ShuffleSeasonIterator(season1.getEpisodes(), 42L);
+        while (shuffle.hasNext()) {
+            System.out.println(shuffle.next());
         }
 
         System.out.println("\nFor-each loop:");
