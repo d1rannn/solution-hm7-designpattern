@@ -1,53 +1,43 @@
 package iterator;
 
-import java.util.*;
-
 public class Main {
     public static void main(String[] args) {
-        // Create a season
-        Season season = new Season();
-        season.addEpisode(new Episode("Pilot", 1800));
-        season.addEpisode(new Episode("Episode 2", 1900));
-        season.addEpisode(new Episode("Episode 3", 2000));
-
-        // Normal iterator
-        System.out.println("--- Normal order ---");
-        EpisodeIterator normalIterator = new SeasonIterator(season.getEpisodes());
-        while (normalIterator.hasNext()) {
-            System.out.println(normalIterator.next().getTitle());
+        // Step 1: Create a big Season with 10,000 episodes
+        Season bigSeason = new Season();
+        for (int i = 1; i <= 10_000; i++) {
+            bigSeason.addEpisode(new Episode("Episode " + i, (int)(Math.random() * 1000 + 1000)));
         }
+        System.out.println("Generated 10,000 episodes.\n");
 
-        // Reverse iterator
-        System.out.println("\n--- Reverse order ---");
-        EpisodeIterator reverseIterator = new ReverseSeasonIterator(season.getEpisodes());
-        while (reverseIterator.hasNext()) {
-            System.out.println(reverseIterator.next().getTitle());
-        }
+        // Step 2: Time each iterator
+        long normalTime = timeIterator(new SeasonIterator(bigSeason.getAllEpisodes()));
+        long reverseTime = timeIterator(new ReverseSeasonIterator(bigSeason.getAllEpisodes()));
+        long shuffleTime = timeIterator(new ShuffleSeasonIterator(bigSeason.getAllEpisodes()));
 
-        // Shuffle iterator
-        System.out.println("\n--- Shuffle order ---");
-        EpisodeIterator shuffleIterator = new ShuffleSeasonIterator(season.getAllEpisodes()); // Not getEpisodes()
-        while (shuffleIterator.hasNext()) {
-            System.out.println(shuffleIterator.next().getTitle());
-        }
+        // Step 3: Print results
+        System.out.println("\nPerformance Report (lower is better):");
+        printBar("Normal Iterator ", normalTime);
+        printBar("Reverse Iterator", reverseTime);
+        printBar("Shuffle Iterator", shuffleTime);
+    }
 
-        // Skip intro demo
-        System.out.println("\n--- Skip Intro Iterator ---");
-        EpisodeIterator skipBaseIterator = new SeasonIterator(season.getEpisodes());
-        SkipIntroIterator skipIntroIterator = new SkipIntroIterator(skipBaseIterator, 90); // Skip 90 seconds
-        while (skipIntroIterator.hasNext()) {
-            EpisodeView view = skipIntroIterator.next();
-            view.play(); // play from 90 seconds
+    private static long timeIterator(EpisodeIterator iterator) {
+        long start = System.nanoTime();
+        while (iterator.hasNext()) {
+            Episode e = iterator.next();
+            // We can simulate reading the title (small operation)
+            e.getTitle();
         }
+        long end = System.nanoTime();
+        return (end - start) / 1_000_000; // return time in milliseconds
+    }
 
-        // Watch history filter demo
-        System.out.println("\n--- Watch History Filter Iterator ---");
-        Set<String> watched = new HashSet<>();
-        watched.add("Pilot"); // Already watched "Pilot"
-        EpisodeIterator watchHistoryBase = new SeasonIterator(season.getEpisodes());
-        WatchHistoryIterator watchHistoryIterator = new WatchHistoryIterator(watchHistoryBase, watched);
-        while (watchHistoryIterator.hasNext()) {
-            System.out.println("Unwatched: " + watchHistoryIterator.next().getTitle());
+    private static void printBar(String label, long timeMs) {
+        System.out.printf("%-18s | ", label);
+        int bars = (int) (timeMs / 2); // 1 bar per ~2ms (adjust if needed)
+        for (int i = 0; i < bars; i++) {
+            System.out.print("#");
         }
+        System.out.println(" " + timeMs + " ms");
     }
 }
