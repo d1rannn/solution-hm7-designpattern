@@ -15,6 +15,14 @@ public class PassengerPlane extends Aircraft {
 
     @Override
     public void requestRunway() {
+        decreaseFuel(); // NEW
+        System.out.println("PassengerPlane " + id + " fuel level: " + fuelLevel + "%");
+
+        if (fuelLevel <= 10) {
+            sendEmergency();
+            return;
+        }
+
         if (mediator.requestRunway(this)) {
             System.out.println("PassengerPlane " + id + " is cleared for runway.");
             Executors.newSingleThreadScheduledExecutor().schedule(() -> {
