@@ -1,3 +1,5 @@
+package iterator;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,5 +22,9 @@ public class Season implements Iterable<Episode> {
 
     public List<Episode> getEpisodes() {
         return episodes;
+    }
+
+    public List<Episode> getAllEpisodes() {
+        return new ArrayList<>(episodes); // return a copy, not the original list
     }
 }
