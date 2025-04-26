@@ -27,3 +27,16 @@ Here’s why:
 
 # 📋 Conclusion
 Using an iterator provides **encapsulation, flexibility, control, and future-proofing**, making the system more robust and maintainable.
+
+---
+
+# Reflection: Why is Mediator better than direct aircraft communication?
+
+In an airport setting, direct communication between aircraft would create chaos. Every aircraft would have to manage multiple relationships, coordinate their timings, and handle conflict resolution on their own. 
+
+Using a **Mediator pattern**, we centralize the communication through the **ControlTower**. Aircraft now only send and receive through a single entity, drastically reducing complexity, coupling, and risk of conflict.
+
+The Mediator also makes it easy to enforce centralized rules, like giving emergency landings priority or ensuring FIFO access to the runway. Without the Mediator, updating communication rules would require touching all aircraft code, while with the Mediator, changes happen in a single place.
+
+## Disadvantage:
+The main disadvantage is that the Mediator (ControlTower) can become a “god object” — overly large and complex if not carefully designed. It can become a single point of failure or maintenance bottleneck.
