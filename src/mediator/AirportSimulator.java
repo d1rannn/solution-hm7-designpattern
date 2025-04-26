@@ -13,33 +13,35 @@ public class AirportSimulator {
         List<Aircraft> aircraftList = new ArrayList<>();
         Random random = new Random();
 
-        // Spawn 10 random aircrafts
+        // Spawn 10 random aircraft
         for (int i = 0; i < 10; i++) {
-            int type = random.nextInt(3);
             Aircraft a;
-            if (type == 0) {
-                a = new PassengerPlane("Passenger-" + i, tower);
-            } else if (type == 1) {
-                a = new CargoPlane("Cargo-" + i, tower);
-            } else {
-                a = new Helicopter("Helicopter-" + i, tower);
+            switch (random.nextInt(3)) {
+                case 0 -> a = new PassengerPlane("Passenger-" + i, tower);
+                case 1 -> a = new CargoPlane("Cargo-" + i, tower);
+                default -> a = new Helicopter("Helicopter-" + i, tower);
             }
             tower.registerAircraft(a);
             aircraftList.add(a);
         }
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
         executor.scheduleAtFixedRate(() -> {
             int idx = random.nextInt(aircraftList.size());
             Aircraft a = aircraftList.get(idx);
-            a.requestRunway();
+
+            if (random.nextInt(10) == 0) { // 10% chance to MAYDAY
+                a.sendEmergency();
+            } else {
+                a.requestRunway();
+            }
         }, 0, 1, TimeUnit.SECONDS);
 
-        // Shutdown after 20 seconds for demonstration
         executor.schedule(() -> {
             executor.shutdown();
             System.out.println("Simulation ended.");
-        }, 20, TimeUnit.SECONDS);
+        }, 30, TimeUnit.SECONDS);
     }
 }
 

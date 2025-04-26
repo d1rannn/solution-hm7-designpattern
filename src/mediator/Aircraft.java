@@ -18,4 +18,8 @@ public abstract class Aircraft {
     public String getId() {
         return id;
     }
+
+    public void sendEmergency() {
+        mediator.broadcast("MAYDAY", this);
+    }
 }
