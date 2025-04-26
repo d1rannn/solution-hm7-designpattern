@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class ShuffleSeasonIterator implements EpisodeIterator {
     private List<Episode> shuffledEpisodes;
-    private int currentIndex = 0;
+    private int position = 0;
 
     public ShuffleSeasonIterator(List<Episode> episodes, long seed) {
         shuffledEpisodes = new ArrayList<>(episodes);
@@ -14,11 +14,11 @@ public class ShuffleSeasonIterator implements EpisodeIterator {
 
     @Override
     public boolean hasNext() {
-        return currentIndex < shuffledEpisodes.size();
+        return position < shuffledEpisodes.size();
     }
 
     @Override
     public Episode next() {
-        return shuffledEpisodes.get(currentIndex++);
+        return shuffledEpisodes.get(position++);
     }
 }
